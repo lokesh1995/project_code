@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/BmsMenu"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>MAP</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
+   integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+   crossorigin=""/>
+   
+   <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
+   integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
+   crossorigin=""></script>
+  
+<style type="text/css">
+
+label { font-weight: normal !important; }
+
+#mapid { height: 680px; }
+  
+  .the-legend {
+    border-style: none;
+    border-width: 0;
+    font-size: 14px;
+    line-height: 20px;
+    margin-bottom: 0;
+    width: auto;
+    padding: 0 10px;
+    /* border: 1px solid #e0e0e0; */
+}
+.the-fieldset {
+    border: 1px solid #e0e0e0;
+    padding: 10px;
+}
+
+.row2 {
+	margin-top: 10px;
+}
+  
+  hr.style2 {
+border-top: 3px double #8c8b8b;
+padding: 0px;
+   margin: 0px; 
+}
+hr.style3 {
+border-top: 1px solid #8c8b8b;
+padding: 0px;
+   margin: 0px; 
+}
+  
+  
+  </style>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+  <!-- th:href="@{/css/myOwnStyle.css}" -->
+  
+  </head>
+
+<body>
+
+<div layout:fragment="content">
+
+ <div id="mapid"></div>
+ 
+<script src="/lib/jquery.min.js"></script>
+<script src="/lib/jquery.plugin.js"></script>
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+ 
+ 
+ <script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+		
+		/* var latlng =[[${latlng}]]; */
+		
+		var surveycomplete =[[${surveycomplete}]];
+		var surveyaccept =[[${surveyaccept}]];
+		var surveyreject =[[${surveyreject}]];
+		var drillingFail =[[${drillingFail}]];
+		var drillingsuccess =[[${drillingsuccess}]];
+		var revisit =[[${revisit}]];
+		
+		var a0=[];
+		var b0=[];
+		var c0=[];
+		
+		var a=[];
+		var b=[];
+		var c=[];
+		
+		var a1=[];
+		var b1=[];
+		var c1=[];
+		
+		var a2=[];
+		var b2=[];
+		var c2=[];
+		
+		var a3=[];
+		var b3=[];
+		var c3=[];
+		var d3=[];
+		
+		var a4=[];
+		var b4=[];
+		var c4=[];
+		
+		
+		var mymap = L.map('mapid').setView([16.97493, 81.79498], 5);
+
+		L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+	        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+	    }).addTo(mymap);
+		
+		
+		var myIcon = L.divIcon({className: 'leaflet-div-icon'});
+		
+		$.each(surveycomplete, function(i,cuurr)
+				{
+					console.log(cuurr);
+						a0 = cuurr.wellLatitude;
+						b0 = cuurr.wellLongitude;
+						c0 = cuurr.requestModel.referenceId;
+						console.log("surveycomplete"+cuurr.wellLatitude);
+						console.log(cuurr.wellLongitude);
+						console.log(cuurr.requestModel.referenceId);
+						
+						var myIcon = L.icon({
+			    		    iconUrl: '/Images/yellow-icon.png',
+			    		    iconSize: [32, 50],
+			    		    iconAnchor: [22, 94],
+			    		    popupAnchor: [-3, -76],
+			    		    shadowUrl: 'my-icon-shadow.png',
+			    		    shadowSize: [68, 95],
+			    		    shadowAnchor: [22, 94]
+			    		});
+			    	 
+			    	 var popup = L.popup() 
+			         .setLatLng([a0,b0])
+			         .setContent( c0 +'<p>Waiting for Survey Acceptance</p>')
+			    	 
+				L.marker([a0,b0], {icon: myIcon}).bindPopup(popup,customOptions).addTo(mymap);
+				
+				var bindPopup=L.bindPopup;
+				
+				var customOptions =
+			    {
+			    'maxWidth': '500',
+			    'className' : 'custom'
+			    }
+					
+				});
+		
+		$.each(surveyaccept, function(i,cuurr)
+				{
+					console.log(cuurr);
+						a = cuurr.wellLatitude;
+						b = cuurr.wellLongitude;
+						c = cuurr.requestModel.referenceId;
+						console.log("surveyaccept"+cuurr.wellLatitude);
+						console.log(cuurr.wellLongitude);
+						console.log(cuurr.requestModel.referenceId);
+						
+						var flag = false;
+
+						var drillingObJ = null;
+						
+						$.each(drillingsuccess, function(i,cuurr)
+								{
+									console.log(cuurr);
+										a3 = cuurr.drillingPlaceLatitude;
+										b3 = cuurr.drillingPlaceLongitude;
+										c3 = cuurr.surveyBasicDetails.requestModel.referenceId;
+										d3=cuurr.surveyBasicDetails.churchStatus; 
+										 
+										if(c==c3)
+											{
+												flag=true;
+												drillingObJ=cuurr;
+												return false;
+											}
+										
+								});
+						if(flag==true)
+							{
+							
+							if(d3 == "YES")
+							{
+							
+							var myIcon = L.icon({
+				    		    iconUrl: '/Images/church-icon.png',
+				    		    iconSize: [32, 50],
+				    		    iconAnchor: [22, 94],
+				    		    popupAnchor: [-3, -76],
+				    		    shadowUrl: 'my-icon-shadow.png',
+				    		    shadowSize: [68, 95],
+				    		    shadowAnchor: [22, 94]
+				    		});
+				    	 
+				    	 var popup = L.popup() 
+				         .setLatLng([a3,b3])
+				         .setContent( c3 +'<p>Drilling Success,With Church</p>')
+				    	 
+					L.marker([a3,b3], {icon: myIcon}).bindPopup(popup,customOptions).addTo(mymap);
+					
+					var bindPopup=L.bindPopup;
+					
+					var customOptions =
+				    {
+				    'maxWidth': '500',
+				    'className' : 'custom'
+				    }
+							
+							}
+						else
+							{
+							
+							var myIcon = L.icon({
+				    		    iconUrl: '/Images/green-icon.png',
+				    		    iconSize: [32, 50],
+				    		    iconAnchor: [22, 94],
+				    		    popupAnchor: [-3, -76],
+				    		    shadowUrl: 'my-icon-shadow.png',
+				    		    shadowSize: [68, 95],
+				    		    shadowAnchor: [22, 94]
+				    		});
+				    	 
+				    	 var popup = L.popup() 
+				         .setLatLng([a3,b3])
+				         .setContent( c3 +'<p>Drilling Success,Without Church</p>') 
+				    	 
+					L.marker([a3,b3], {icon: myIcon}).bindPopup(popup,customOptions).addTo(mymap);
+					
+					var bindPopup=L.bindPopup;
+					
+					var customOptions =
+				    {
+				    'maxWidth': '500',
+				    'className' : 'custom'
+				    }
+							
+					}
+							
+							}
+						else
+							{
+							
+							var myIcon = L.icon({
+				    		    iconUrl: '/Images/my-icon.png',
+				    		    iconSize: [32, 50],
+				    		    iconAnchor: [22, 94],
+				    		    popupAnchor: [-3, -76],
+				    		    shadowUrl: 'my-icon-shadow.png',
+				    		    shadowSize: [68, 95],
+				    		    shadowAnchor: [22, 94]
+				    		});
+				    	 
+				    	 var popup = L.popup() 
+				         .setLatLng([a,b])
+				         .setContent( c +'<p>Survey Accepted</p>')
+				    	 
+					L.marker([a,b], {icon: myIcon}).bindPopup(popup,customOptions).addTo(mymap);
+					
+					var bindPopup=L.bindPopup;
+					
+					var customOptions =
+				    {
+				    'maxWidth': '500',
+				    'className' : 'custom'
+				    }
+							
+							}
+										
+								});
+				
+		
+		$.each(surveyreject, function(i,cuurr)
+				{
+					console.log(cuurr);
+						a1 = cuurr.wellLatitude;
+						b1 = cuurr.wellLongitude;
+						c1 = cuurr.requestModel.referenceId;
+						console.log("surveyreject"+cuurr.wellLatitude);
+						console.log(cuurr.wellLongitude);
+						console.log(cuurr.requestModel.referenceId);
+						
+						 var myIcon = L.icon({
+				    		    iconUrl: '/Images/red-icon.png',
+				    		    iconSize: [32, 50],
+				    		    iconAnchor: [22, 94],
+				    		    popupAnchor: [-3, -76],
+				    		    shadowUrl: 'my-icon-shadow.png',
+				    		    shadowSize: [68, 95],
+				    		    shadowAnchor: [22, 94]
+				    		});
+				    	 
+				    	 var popup = L.popup() 
+				         .setLatLng([a1,b1])
+				         .setContent( c1 +'<p>Survey Rejected</p>') 
+				    	 
+					L.marker([a1,b1], {icon: myIcon}).bindPopup(popup,customOptions).addTo(mymap);
+					
+					var bindPopup=L.bindPopup;
+					
+					var customOptions =
+				    {
+				    'maxWidth': '500',
+				    'className' : 'custom'
+				    }
+					
+				});
+		
+		
+		$.each(drillingFail, function(i,cuurr)
+				{
+					console.log(cuurr);
+						a2 = cuurr.drillingPlaceLatitude;
+						b2 = cuurr.drillingPlaceLongitude;
+						c2 = cuurr.surveyBasicDetails.requestModel.referenceId;
+						console.log("drillingFail"+cuurr.drillingPlaceLatitude);
+						console.log(cuurr.drillingPlaceLongitude);
+						console.log(cuurr.surveyBasicDetails.requestModel.referenceId);
+						
+						 var myIcon = L.icon({
+				    		    iconUrl: '/Images/black-icon.png',
+				    		    iconSize: [32, 50],
+				    		    iconAnchor: [22, 94],
+				    		    popupAnchor: [-3, -76],
+				    		    shadowUrl: 'my-icon-shadow.png',
+				    		    shadowSize: [68, 95],
+				    		    shadowAnchor: [22, 94]
+				    		});
+				    	 
+				    	 var popup = L.popup() 
+				         .setLatLng([a2,b2])
+				         .setContent( c2 +'<p>Drilling Failed</p>') 
+				    	 
+					L.marker([a2,b2], {icon: myIcon}).bindPopup(popup,customOptions).addTo(mymap);
+					
+					var bindPopup=L.bindPopup;
+					
+					var customOptions =
+				    {
+				    'maxWidth': '500',
+				    'className' : 'custom'
+				    }
+					
+				});
+		
+		$.each(revisit, function(i,cuurr)
+				{
+					console.log(cuurr);
+						a4 = cuurr.fittingDetails.drillingDetails.drillingPlaceLatitude;
+						b4 = cuurr.fittingDetails.drillingDetails.drillingPlaceLongitude;
+						c4 = cuurr.fittingDetails.drillingDetails.surveyBasicDetails.requestModel.referenceId;
+						console.log(cuurr.fittingDetails.drillingDetails.drillingPlaceLatitude);
+						console.log(b4);
+						console.log(c4);
+						
+						 var myIcon = L.icon({
+				    		    iconUrl: '/Images/pink-icon.png',
+				    		    iconSize: [32, 50],
+				    		    iconAnchor: [22, 94],
+				    		    popupAnchor: [-3, -76],
+				    		    shadowUrl: 'my-icon-shadow.png',
+				    		    shadowSize: [68, 95],
+				    		    shadowAnchor: [22, 94]
+				    		});
+				    	 
+				    	 var popup = L.popup() 
+				         .setLatLng([a4,b4])
+				         .setContent( c4 +'<p>Revisited</p>') 
+				    	 
+					L.marker([a4,b4], {icon: myIcon}).bindPopup(popup,customOptions).addTo(mymap);
+					
+					var bindPopup=L.bindPopup;
+					
+					var customOptions =
+				    {
+				    'maxWidth': '500',
+				    'className' : 'custom'
+				    }
+					
+				});
+			 
+	 /*]]>*/
+</script>
+
+
+<footer>
+	<div class="container">
+    	<div class="col-md-12">
+        	<p>&copy; 2018. Powered By Dizitive IT Solutions</p>
+        </div>
+    </div>
+</footer>
+
+</div>
+
+</body>
+</html>
