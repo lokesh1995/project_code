@@ -1,0 +1,47 @@
+$("#start_month").on('change', function()
+{
+
+var months= $("#requestedDuration").val();
+var startMonth= $("#start_month").selectpicker('val');
+var totalMonths=parseInt(startMonth)+parseInt(months);
+
+if(totalMonths >12)
+{	
+for (var i = 12; i <= totalMonths; i += 12) 
+{
+var req=totalMonths-i;
+$("#select_end_month").selectpicker('val',req-1);	
+}
+
+}
+else
+{
+$("#select_end_month").selectpicker('val',totalMonths-1);	
+} 
+
+});
+
+
+$("#start_Year").on('change', function()
+{
+
+var months1= $("#requestedDuration").val();
+var startMonth1= $("#start_month").selectpicker('val');
+var startYear1= $("#start_Year").selectpicker('val');
+var totalMonths1=parseInt(startMonth1)+parseInt(months1);
+
+if(totalMonths1 >12)
+{
+var k=1;
+for (var j = 12; j <= totalMonths1; j += 12) 
+{
+
+var req1=parseInt(startYear1)+k;
+k++
+}
+$("#select_End_Year").selectpicker('val',req1);	
+}
+else
+{
+$("#select_End_Year").selectpicker('val',startYear1);
+}
